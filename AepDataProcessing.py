@@ -113,14 +113,18 @@ def write_excel_file(df, sheet_name):
 # Main Streamlit app
 def main():
     st.title("Droplet Size Parameters")
-    st.text('''This app assumes that the Excel file contains the following columns
+    st.text('''This app assumes that the Excel file contains the following columns 
             in the following order in columns A:N:
-            Date, Time, Range, Solution, Nozzle, Nozzle Orifice, Pressure, Airspeed, Rep,
-            Dv10, Dv50, Dv90, RS
+            Date, Time, Range, Solution, Nozzle, Nozzle Orifice, Pressure, 
+            Airspeed, Rep, Dv10, Dv50, Dv90, RS
+
             Followed by the 31 incremental distribution columns: AE:BI.
+
             It is also assumed that the reference nozzle data names contain the strings:
             11001, 11003, 11006, 8008, 6510, and 6515.
+
             If these assumptions are not met, the app will not work correctly.
+            
             If the excel file contains more than one worksheet of data, the user
             will have to selected each worksheet individually and save the resulting data
             to separate Excel files.''')
