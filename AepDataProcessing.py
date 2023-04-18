@@ -2,7 +2,11 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
+import io
+
 # To run: streamlit run AepDataProcessing.py
+
+buffer = io.BytesIO()
 
 def interpolate_volume_fraction(row, diameter, range="Small"):
     diameter = int(diameter)
@@ -102,9 +106,23 @@ def calc_aep_fractions(df):
 # Define function to write mean data to a new Excel file
 def write_excel_file(means):
     file_name = st.text_input("Enter file name for mean data", "means.xlsx")
-    if st.button("Download mean data"):
-        means.to_excel(file_name, index=False)
-        st.success(f"Mean data written to {file_name}!")
+    # Create a Pandas Excel writer using XlsxWriter as the engine.
+    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        # write means to Excel file
+        means.to_excel(writer, sheet_name='Data', index=False)
+        # Close the Pandas Excel writer and output the Excel file.
+        writer.save()
+
+        st.download_button(label='Download Excel Data', data=buffer,
+                           file_name=file_name, mime='application/vnd.ms-excel')
+    # if st.button("Download mean data"):
+    #     means.to_excel(file_name, index=False)
+    #     st.success(f"Mean data written to {file_name}!")
+
+# Define function the converts dataframe to csv file
+def convert_to_csv(df):
+    csv = df.to_csv(index=False).encode('utf-8')
+    return csv
 
 # Main Streamlit app
 def main():
@@ -126,6 +144,13 @@ def main():
 
         # Add Button to download means to Excel file
         write_excel_file(aep_fracs)
+        
+        # Convert aep_fracs df to csv file
+        csv = convert_to_csv(aep_fracs)
+        # Get filename from user
+        filename = st.text_input("Enter filename for AEP data", "")
+        # Add Button to download csv file
+        st.download_button('Press to Download', csv, filename+'.csv', key='download-csv')
 
 if __name__ == '__main__':
     main()
