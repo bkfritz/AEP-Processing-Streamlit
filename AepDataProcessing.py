@@ -120,14 +120,15 @@ def main():
 
             Followed by the 31 incremental distribution columns: AE:BI.
 
-            It is also assumed that the reference nozzle data names contain the strings:
+            It is also assumed that the reference nozzle data 
+            names contain the strings:
             11001, 11003, 11006, 8008, 6510, and 6515.
 
             If these assumptions are not met, the app will not work correctly.
-            
+
             If the excel file contains more than one worksheet of data, the user
-            will have to selected each worksheet individually and save the resulting data
-            to separate Excel files.''')
+            will have to selected each worksheet individually and save the 
+            resulting data to separate Excel files.''')
 
     st.write("Upload an Excel file with droplet size data")
     # Read Excel file
