@@ -62,22 +62,18 @@ def get_too_big(df):
     return too_big
 
 # Define function to read Excel file and prompt user to select sheet
-def read_excel_file():
-    uploaded_file = st.file_uploader("Upload Excel file", type=["xlsx", "xls"])
-    if uploaded_file:
-        sheet_names = pd.read_excel(uploaded_file, sheet_name=None).keys()
-        selected_sheet = st.selectbox("Select sheet", list(sheet_names))
-        # print selcted sheet to screen
-        st.write(f"Selected sheet: {selected_sheet}")
-        # Specify the columns to read in the excel file, include A, B, D, F
-        columns_to_read = 'A:N, AE:BI'
-        # read the selected sheet
-        df = pd.read_excel(uploaded_file, sheet_name=selected_sheet, usecols=columns_to_read)
-        # Convert all columns names to string
-        df.columns = df.columns.astype(str)
-        # Remove whitespace from column names and convert to string
-        df.columns = df.columns.str.replace(' ', '')
-        return df
+def process_excel_file(uploaded_file):
+    sheet_names = pd.read_excel(uploaded_file, sheet_name=None).keys()
+    selected_sheet = st.selectbox("Select sheet", list(sheet_names))
+    # Specify the columns to read in the excel file, include A, B, D, F
+    columns_to_read = 'A:N, AE:BI'
+    # read the selected sheet
+    df = pd.read_excel(uploaded_file, sheet_name=selected_sheet, usecols=columns_to_read)
+    # Convert all columns names to string
+    df.columns = df.columns.astype(str)
+    # Remove whitespace from column names and convert to string
+    df.columns = df.columns.str.replace(' ', '')
+    return selected_sheet, df
 
 # Define function to calculate means for each unique combination of nozzle and solution
 def calculate_means(df):
@@ -102,40 +98,49 @@ def calc_aep_fractions(df):
     
     return df
 
-
 # Define function to write mean data to a new Excel file
-def write_excel_file(means):
-    file_name = st.text_input("Enter file name for mean data", "means.xlsx")
+def write_excel_file(df, sheet_name):
+    st.write("Filename defaults to Sheet name selected")
+    file_name = st.text_input("Enter file name for AEP data", sheet_name+".xlsx")
     # Create a Pandas Excel writer using XlsxWriter as the engine.
     with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
         # write means to Excel file
-        means.to_excel(writer, sheet_name='Data', index=False)
-        # Close the Pandas Excel writer and output the Excel file.
-        writer.save()
+        df.to_excel(writer, sheet_name='Data', index=False)
 
-        st.download_button(label='Download Excel Data', data=buffer,
+    st.download_button(label='Download Excel Data', data=buffer,
                            file_name=file_name, mime='application/vnd.ms-excel')
 
 # Main Streamlit app
 def main():
     st.title("Droplet Size Parameters")
+    st.info(" This app assumes that the Excel file contains the following columns \
+            in the following order in columns A:N:\
+            Date, Time, Range, Solution, Nozzle, Nozzle Orifice, Pressure, Airspeed, Rep,\
+            Dv10, Dv50, Dv90, RS\
+            Followed by the 31 incremental distribution columns: AE:BI. \
+            It is also assumed that the reference nozzle data names contain the strings:\
+            11001, 11003, 11006, 8008, 6510, and 6515.\
+            If these assumptions are not met, the app will not work correctly.")
     st.write("Upload an Excel file with droplet size data")
-    df = read_excel_file()
-    if df is not None:
-        st.write("Calculating means for each unique combination of nozzle and solution...")
-        means = calculate_means(df)
-        # write too_small value to screen
-        st.write("Too small value:")    
-        st.write(round(get_too_small(means),0))
-        # write too_big value to screen
-        st.write("Too big value:")
-        st.write(round(get_too_big(means),0))
-        aep_fracs = calc_aep_fractions(means)
-        st.write("AEP data:")
-        st.write(aep_fracs)
+    # Read Excel file
+    uploaded_file = st.file_uploader("Upload Excel file", type=["xlsx", "xls"])
+    if uploaded_file:
+        sheet_name, df = process_excel_file(uploaded_file)
+        if df is not None:
+            st.write("Calculating means for each unique combination of nozzle and solution...")
+            means = calculate_means(df)
+            # write too_small value to screen
+            st.write("Too small value:")    
+            st.write(round(get_too_small(means),0))
+            # write too_big value to screen
+            st.write("Too big value:")
+            st.write(round(get_too_big(means),0))
+            aep_fracs = calc_aep_fractions(means)
+            st.write("AEP data:")
+            st.write(aep_fracs)
 
-        # Add Button to download means to Excel file
-        write_excel_file(aep_fracs)
+            # Add Button to download means to Excel file
+            write_excel_file(aep_fracs, sheet_name)
 
 if __name__ == '__main__':
     main()
