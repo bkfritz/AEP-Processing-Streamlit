@@ -113,7 +113,7 @@ def write_excel_file(df, sheet_name):
 # Main Streamlit app
 def main():
     st.title("Droplet Size Parameters")
-    st.info(" This app assumes that the Excel file contains the following columns \
+    st.text(" This app assumes that the Excel file contains the following columns \
             in the following order in columns A:N:\
             Date, Time, Range, Solution, Nozzle, Nozzle Orifice, Pressure, Airspeed, Rep,\
             Dv10, Dv50, Dv90, RS\
