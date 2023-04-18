@@ -2,11 +2,32 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
+import matplotlib.pyplot as plt
 import io
 
 # To run: streamlit run AepDataProcessing.py
 
 buffer = io.BytesIO()
+
+def CPDA_Donut(values, ax=None, **plt_kwargs):
+    if ax is None:
+        ax = plt.gca()
+
+    if len(values) == 0:
+        ax.text(-0.3, -0.2, 'N/A', fontsize=80, color='black')
+    else:
+        explode = (0, 0, 0)
+        colors = ['royalblue', 'mediumseagreen', 'lightcoral']
+        ax.pie(values, explode=explode, colors=colors,
+               autopct='', shadow=False, startangle=140, pctdistance=1.1,
+               textprops={'fontsize': 16}, labeldistance=1.2,
+               wedgeprops={"edgecolor": "k", 'linewidth': 2, 'antialiased': True})
+
+        # ax.axis('equal')
+        # draw circle
+        centre_circle = plt.Circle((0, 0), 0.65, fc='white', ec='black', lw=2)
+        ax.add_patch(centre_circle)
+        ax.text(-0.25, -0.15, str(int(values[1])), fontsize=50, color='black')
 
 def interpolate_volume_fraction(row, diameter, range="Small"):
     diameter = int(diameter)
@@ -37,7 +58,7 @@ def get_too_small(df):
     # get unique list of nozzle names
     nozzles = df['Nozzle'].unique()
     # Find index of nozzle name that contains "11003"
-    index = next((i for i, name in enumerate(nozzles) if "11003" in name), None)
+    index = next((i for i, name in enumerate(nozzles) if "11006" in name), None)
     # if index is not None: set too_small as the Dv10 value using the nozzle name in nozzle at the index
     if index is not None:
         # get Dv10 value from means for nozzle in nozzles at index
