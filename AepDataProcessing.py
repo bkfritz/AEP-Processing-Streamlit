@@ -124,7 +124,6 @@ def main():
         st.write("AEP data:")
         st.write(aep_fracs)
 
-
         # Add Button to download means to Excel file
         write_excel_file(aep_fracs)
 
