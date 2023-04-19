@@ -343,7 +343,7 @@ def plot_figures(df, adjuvants):
         figs.append(fig)
     return figs
 
-def get_zip_file(figs, df)
+def get_zip_file(figs, df):
     zip_buffer = io.BytesIO()
 
     with zipfile.ZipFile(zip_buffer, mode='w') as archive:
