@@ -426,9 +426,9 @@ def main():
             adj_list = adj_list[~pd.isnull(adj_list)]
 
             # Generate and display the figures
-            figs = plot_figures(aep_fracs, adj_list)
-            for fig in figs:
-                st.write(fig)
+            # figs = plot_figures(aep_fracs, adj_list)
+            # for fig in figs:
+            #     st.write(fig)
             
             # Download Plots and Results Data
             if st.sidebar.button('Download CSV File and Plots'):
