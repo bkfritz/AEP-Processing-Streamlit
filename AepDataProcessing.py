@@ -343,10 +343,24 @@ def plot_figures(df, adjuvants):
         figs.append(fig)
     return figs
 
-def fig_to_base64(fig):
-    buf = io.BytesIO()
-    fig.savefig(buf, format='png')
-    return base64.b64encode(buf.getbuffer()).decode('ascii')
+def get_zip_file(figs, df)
+    zip_buffer = io.BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, mode='w') as archive:
+        for i, fig in enumerate(figs):
+            png_buffer = io.BytesIO()
+            fig.savefig(png_buffer, format='png')
+            png_buffer.seek(0)
+            archive.writestr(f'figure_{i}.png', png_buffer.read())
+
+        # Save the dataframe to Excel
+        excel_buffer = io.BytesIO()
+        df.to_excel(excel_buffer, engine='xlswriter', index=False)
+        excel_buffer.seek(0)
+        archive.writestr('data.xlsx', excel_buffer.read())
+    
+    zip_buffer.seek(0)
+    return zip_buffer
 
 # Main Streamlit app
 def main():
@@ -396,8 +410,8 @@ def main():
             st.write("All AEP Results for Adjuvants in Current Worksheet:")
             st.write(aep_fracs)
 
-            # Add Button to download means to Excel file
-            write_excel_file(aep_fracs, sheet_name)
+            # # Add Button to download means to Excel file
+            # write_excel_file(aep_fracs, sheet_name)
 
             aep_fracs = addProductData(aep_fracs)
             # Get list of unique adjuvants
@@ -421,17 +435,20 @@ def main():
                 st.write(fig)
             
             # Download figures as images
-            if st.sidebar.button('Download Plots'):
-                zip_filename = 'plots.zip'
-                with zipfile.ZipFile(zip_filename, mode='w') as archive:
-                    for i, fig in enumerate(figs):
-                        png_filename = f'plot_{i}.png'
-                        fig.savefig(png_filename)
-                        archive.write(png_filename)
-                with open(zip_filename, 'rb') as f:
-                    zip_base64 = base64.b64encode(f.read()).decode('ascii')
-                    href = f'<a href="data:application/zip;base64,{zip_base64}" download=\'{zip_filename}\'>Download ZIP</a>'
-                    st.markdown(href, unsafe_allow_html=True)
+
+            # Add Button to download means to Excel file, show and download plots
+            # write_excel_file(aep_fracs, sheet_name, figs)
+            if st.sidebar.button('Download Excel File and Plots'):
+                zip_buffer = get_zip_file(figs, aep_fracs)
+                zip_base64 = base64.b64encode(zip_buffer.read()).decode('ascii')
+                href = f'<a href="data:application/zip;base64,{zip_base64}" download="plots.zip">Download ZIP</a>'
+                st.markdown(href, unsafe_allow_html=True)
+
+
+                # with open(zip_filename, 'rb') as f:
+                #     zip_base64 = base64.b64encode(f.read()).decode('ascii')
+                #     href = f'<a href="data:application/zip;base64,{zip_base64}" download=\'{zip_filename}\'>Download ZIP</a>'
+                #     st.markdown(href, unsafe_allow_html=True)
 
                 # # Iterate through adjuvants
                 # for adjuvant in adj_list:
