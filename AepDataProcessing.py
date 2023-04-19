@@ -425,14 +425,14 @@ def main():
             # Drop nan values
             adj_list = adj_list[~pd.isnull(adj_list)]
 
-            # Generate and display the figures
-            # figs = plot_figures(aep_fracs, adj_list)
+            # Generate the figures
+            figs = plot_figures(aep_fracs, adj_list)
             # for fig in figs:
             #     st.write(fig)
             
             # Download Plots and Results Data
-            if st.sidebar.button('Download CSV File and Plots'):
-                figs = plot_figures(aep_fracs, adj_list)
+            if st.sidebar.button('Download CSV File and Figures'):
+                
                 zip_buffer = get_zip_file(figs, aep_fracs, sheet_name)
                 zip_base64 = base64.b64encode(zip_buffer.read()).decode('ascii')
                 href = f'<a href="data:application/zip;base64,{zip_base64}" download={sheet_name}.zip">Download ZIP File with AEP Results and Plots</a>'
