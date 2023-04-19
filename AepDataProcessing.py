@@ -343,7 +343,7 @@ def plot_figures(df, adjuvants):
         figs.append(fig)
     return figs
 
-def get_zip_file(figs, df):
+def get_zip_file(figs, df, sheetname):
     zip_buffer = io.BytesIO()
 
     with zipfile.ZipFile(zip_buffer, mode='w') as archive:
@@ -357,7 +357,7 @@ def get_zip_file(figs, df):
         csv_buffer = io.BytesIO()
         df.to_csv(csv_buffer, index=False)
         csv_buffer.seek(0)
-        archive.writestr('data.csv', csv_buffer.getvalue())
+        archive.writestr(sheetname + '.csv', csv_buffer.getvalue())
     
     zip_buffer.seek(0)
     return zip_buffer
@@ -387,7 +387,16 @@ def main():
     If these assumptions are not met, the app will not work correctly.
 
 
-    If the excel file contains more than one worksheet of data, the user will have to selected each worksheet individually and save the resulting data to separate Excel files.
+    If the excel file contains more than one worksheet of data, the user will have to selected each worksheet individually and save the resulting data to separate zip files.
+
+
+    NOTE: Wait until all Figures and the link to Download ZIP File with AEP Results and Plots are displayed.
+
+
+    Once the link is displayed, click on it to download the zip file. The zip file will contain the AEP results and plots for each adjuvant in the Excel file.
+
+
+    Once download, any additional worksheets can be processed by changing in the pull menu above.  The link to download the zip file will be updated with the new data.
     
     
     ''')
@@ -410,60 +419,23 @@ def main():
             st.write("All AEP Results for Adjuvants in Current Worksheet:")
             st.write(aep_fracs)
 
-            # # Add Button to download means to Excel file
-            # write_excel_file(aep_fracs, sheet_name)
-
             aep_fracs = addProductData(aep_fracs)
             # Get list of unique adjuvants
             adj_list = aep_fracs['Adj'].unique()
             # Drop nan values
             adj_list = adj_list[~pd.isnull(adj_list)]
 
-            # # Show selectbox with adjuvants
-            # selected_adjuvant = st.sidebar.selectbox('Select adjuvant name to see AEP only for that product:', adj_list)
-
-            # # Filter data by selected adjuvant
-            # filtered_data = df[df['Adj'] == selected_adjuvant]
-
-            # # Display filtered data
-            # st.write("AEP Results for Product: " + selected_adjuvant + " only")
-            # st.write(filtered_data)
-
             # Generate and display the figures
             figs = plot_figures(aep_fracs, adj_list)
             for fig in figs:
                 st.write(fig)
             
-            # Download figures as images
-
-            # Add Button to download means to Excel file, show and download plots
-            # write_excel_file(aep_fracs, sheet_name, figs)
-            if st.sidebar.button('Download Excel File and Plots'):
-                zip_buffer = get_zip_file(figs, aep_fracs)
+            # Download Plots and Results Data
+            if st.sidebar.button('Download CSV File and Plots'):
+                zip_buffer = get_zip_file(figs, aep_fracs, sheet_name)
                 zip_base64 = base64.b64encode(zip_buffer.read()).decode('ascii')
-                href = f'<a href="data:application/zip;base64,{zip_base64}" download="plots.zip">Download ZIP</a>'
-                st.markdown(href, unsafe_allow_html=True)
-
-                # with open(zip_filename, 'rb') as f:
-                #     zip_base64 = base64.b64encode(f.read()).decode('ascii')
-                #     href = f'<a href="data:application/zip;base64,{zip_base64}" download=\'{zip_filename}\'>Download ZIP</a>'
-                #     st.markdown(href, unsafe_allow_html=True)
-
-                # # Iterate through adjuvants
-                # for adjuvant in adj_list:
-
-                #     # Filter data by adjuvant
-                #     filtered_data = getAdjuvantData(df, adjuvant)
-
-                #     # Create plot
-                #     fig = createAdjuvantAEPRatingFigure(filtered_data)
-                #     plots.append(fig)
-
-                #     st.write(f'Results Plot for {adjuvant}:')
-                #     st.pyplot(fig)
-
-                #     # Save plot
-                #     fig.savefig('AEP Results Table for ' + adjuvant + '.png', dpi=300)
+                href = f'<a href="data:application/zip;base64,{zip_base64}" download={sheet_name}.zip">Download ZIP File with AEP Results and Plots</a>'
+                st.sidebar.markdown(href, unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
