@@ -444,7 +444,6 @@ def main():
                 href = f'<a href="data:application/zip;base64,{zip_base64}" download="plots.zip">Download ZIP</a>'
                 st.markdown(href, unsafe_allow_html=True)
 
-
                 # with open(zip_filename, 'rb') as f:
                 #     zip_base64 = base64.b64encode(f.read()).decode('ascii')
                 #     href = f'<a href="data:application/zip;base64,{zip_base64}" download=\'{zip_filename}\'>Download ZIP</a>'
