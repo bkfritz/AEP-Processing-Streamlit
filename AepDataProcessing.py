@@ -353,11 +353,11 @@ def get_zip_file(figs, df):
             png_buffer.seek(0)
             archive.writestr(f'figure_{i}.png', png_buffer.read())
 
-        # Save the dataframe to Excel
-        excel_buffer = io.BytesIO()
-        df.to_excel(excel_buffer, engine='xlswriter', index=False)
-        excel_buffer.seek(0)
-        archive.writestr('data.xlsx', excel_buffer.read())
+        # Save the dataframe to csv
+        csv_buffer = io.BytesIO()
+        df.to_csv(csv_buffer, index=False)
+        csv_buffer.seek(0)
+        archive.writestr('data.csv', csv_buffer.read())
     
     zip_buffer.seek(0)
     return zip_buffer
