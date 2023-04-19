@@ -357,7 +357,7 @@ def get_zip_file(figs, df):
         csv_buffer = io.BytesIO()
         df.to_csv(csv_buffer, index=False)
         csv_buffer.seek(0)
-        archive.writestr('data.csv', csv_buffer.read())
+        archive.writestr('data.csv', csv_buffer.getvalue())
     
     zip_buffer.seek(0)
     return zip_buffer
