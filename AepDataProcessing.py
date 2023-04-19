@@ -4,8 +4,11 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import io
+import base64
 import matplotlib as mpl
 import warnings
+import zipfile
+
 warnings.filterwarnings('ignore')
 
 mpl.rcParams['axes.linewidth'] = 3
@@ -331,6 +334,19 @@ def createAdjuvantAEPRatingFigure(adj_df):
 
     return fig
 
+def plot_figures(df, adjuvants):
+    figs = []
+    for adj in adjuvants:
+        # Filter data by selected adjuvant
+        filtered_data = df[df['Adj'] == adj]
+        fig = createAdjuvantAEPRatingFigure(filtered_data)
+        figs.append(fig)
+    return figs
+
+def fig_to_base64(fig):
+    buf = io.BytesIO()
+    fig.savefig(buf, format='png')
+    return base64.b64encode(buf.getbuffer()).decode('ascii')
 
 # Main Streamlit app
 def main():
@@ -383,41 +399,55 @@ def main():
             # Add Button to download means to Excel file
             write_excel_file(aep_fracs, sheet_name)
 
-            df = addProductData(aep_fracs)
+            aep_fracs = addProductData(aep_fracs)
             # Get list of unique adjuvants
-            adj_list = df['Adj'].unique()
+            adj_list = aep_fracs['Adj'].unique()
             # Drop nan values
             adj_list = adj_list[~pd.isnull(adj_list)]
 
-            # Show selectbox with adjuvants
-            selected_adjuvant = st.sidebar.selectbox('Select adjuvant name to see AEP only for that product:', adj_list)
+            # # Show selectbox with adjuvants
+            # selected_adjuvant = st.sidebar.selectbox('Select adjuvant name to see AEP only for that product:', adj_list)
 
-            # Filter data by selected adjuvant
-            filtered_data = df[df['Adj'] == selected_adjuvant]
+            # # Filter data by selected adjuvant
+            # filtered_data = df[df['Adj'] == selected_adjuvant]
 
-            # Display filtered data
-            st.write("AEP Results for Product: " + selected_adjuvant + " only")
-            st.write(filtered_data)
+            # # Display filtered data
+            # st.write("AEP Results for Product: " + selected_adjuvant + " only")
+            # st.write(filtered_data)
 
-            plots = []
+            # Generate and display the figures
+            figs = plot_figures(aep_fracs, adj_list)
+            for fig in figs:
+                st.write(fig)
+            
+            # Download figures as images
+            if st.sidebar.button('Download Plots'):
+                zip_filename = 'plots.zip'
+                with zipfile.ZipFile(zip_filename, mode='w') as archive:
+                    for i, fig in enumerate(figs):
+                        png_filename = f'plot_{i}.png'
+                        fig.savefig(png_filename)
+                        archive.write(png_filename)
+                with open(zip_filename, 'rb') as f:
+                    zip_base64 = base64.b64encode(f.read()).decode('ascii')
+                    href = f'<a href="data:application/zip;base64,{zip_base64}" download=\'{zip_filename}\'>Download ZIP</a>'
+                    st.markdown(href, unsafe_allow_html=True)
 
-            # Create button to plot data
-            if st.sidebar.button('Plot Results and Save Figures All Adjuvants in Current Worksheet'):
+                # # Iterate through adjuvants
+                # for adjuvant in adj_list:
 
-                # Iterate through adjuvants
-                for adjuvant in adj_list:
+                #     # Filter data by adjuvant
+                #     filtered_data = getAdjuvantData(df, adjuvant)
 
-                    # Filter data by adjuvant
-                    filtered_data = getAdjuvantData(df, adjuvant)
+                #     # Create plot
+                #     fig = createAdjuvantAEPRatingFigure(filtered_data)
+                #     plots.append(fig)
 
-                    # Create plot
-                    fig = createAdjuvantAEPRatingFigure(filtered_data)
+                #     st.write(f'Results Plot for {adjuvant}:')
+                #     st.pyplot(fig)
 
-                    st.write(f'Results Plot for {adjuvant}:')
-                    st.pyplot(fig)
-
-                    # Save plot
-                    fig.savefig('AEP Results Table for ' + adjuvant + '.png', dpi=300)
+                #     # Save plot
+                #     fig.savefig('AEP Results Table for ' + adjuvant + '.png', dpi=300)
 
 if __name__ == '__main__':
     main()
