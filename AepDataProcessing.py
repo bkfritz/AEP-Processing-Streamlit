@@ -380,7 +380,7 @@ def main():
     
     ''')
 
-    st.sidebar.write("Upload an Excel file with droplet size data")
+    st.sidebar.title("Upload an Excel file with droplet size data")
     # Read Excel file
     uploaded_file = st.sidebar.file_uploader("Upload Excel file", type=["xlsx", "xls"])
     if uploaded_file:
