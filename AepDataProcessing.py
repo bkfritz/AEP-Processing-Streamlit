@@ -366,6 +366,15 @@ def get_zip_file(figs, df, sheetname):
     zip_buffer.seek(0)
     return zip_buffer
 
+# Download the DataFrame as a CSV file
+def dataframe_to_csv_download_link(df):
+    filename = 'AEP Data.csv'
+    csv_buffer = io.StringIO()
+    df.to_csv(csv_buffer, index=False)
+    csv_base64 = base64.b64encode(csv_buffer.getvalue().encode('utf-8')).decode('ascii')
+    href = f'<a href="data:text/csv;base64,{csv_base64}" download="{filename}">Download {filename}</a>'
+    return href
+
 # Main Streamlit app
 def main():
     st.sidebar.title("Droplet Size Parameters")
@@ -425,6 +434,9 @@ def main():
 
             aep_fracs = addProductData(aep_fracs)
 
+            # Allow user to download CSV file with AEP results for all adjuvants in current worksheet
+            st.markdown(dataframe_to_csv_download_link(aep_fracs), unsafe_allow_html=True)
+
             # Allow user to download Excel file with AEP results for all adjuvants in current worksheet
             st.sidebar.write("Download Excel file with AEP results for all adjuvants in current worksheet")
             write_excel_file(aep_fracs, sheet_name)
@@ -434,15 +446,15 @@ def main():
             # Drop nan values
             adj_list = adj_list[~pd.isnull(adj_list)]
 
-            # Allow user to select adjuvant
-            adj = st.sidebar.selectbox("Select Adjuvant", adj_list)
+            # # Allow user to select adjuvant
+            # adj = st.sidebar.selectbox("Select Adjuvant", adj_list)
 
-            # Show AEP results for selected adjuvant
-            st.write("AEP Results for Selected Adjuvant:")
-            st.write(aep_fracs[aep_fracs['Adj'] == adj])
+            # # Show AEP results for selected adjuvant
+            # st.write("AEP Results for Selected Adjuvant:")
+            # st.write(aep_fracs[aep_fracs['Adj'] == adj])
 
             # Generate the figures
-            figs = plot_figures(aep_fracs, [adj])
+            figs = plot_figures(aep_fracs, adj_list)
             for i, fig in enumerate(figs):
                 st.write(fig)
                 
