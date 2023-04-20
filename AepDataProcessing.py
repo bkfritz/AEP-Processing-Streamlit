@@ -400,16 +400,10 @@ def main():
     If these assumptions are not met, the app will not work correctly.
 
 
-    If the excel file contains more than one worksheet of data, the user will have to selected each worksheet individually and save the resulting data to separate zip files.
+    If the excel file contains more than one worksheet of data, the user will have to selected each worksheet individually and save the resulting data and image files using the link provided below each.
 
 
-    NOTE: Wait until all Figures and the link to Download ZIP File with AEP Results and Plots are displayed.
-
-
-    Once the link is displayed, click on it to download the zip file. The zip file will contain the AEP results and plots for each adjuvant in the Excel file.
-
-
-    Once download, any additional worksheets can be processed by changing in the pull menu above.  The link to download the zip file will be updated with the new data.
+    Once all desired files are saved, any additional worksheets can be processed by selecting them in the pull menu above.  The new data will be processed and new download links will be provided.
     
     
     ''')
@@ -429,29 +423,19 @@ def main():
             st.write("Too big cutoff value (average of 8008 and 6510 Dv90):")
             st.write(round(get_too_big(means),0))
             aep_fracs = calc_aep_fractions(means)
-            # st.write("All AEP Results for Adjuvants in Current Worksheet:")
-            # st.write(aep_fracs)
+            st.write("All AEP Results for Adjuvants in Current Worksheet:")
+            st.write(aep_fracs)
 
             aep_fracs = addProductData(aep_fracs)
 
             # Allow user to download CSV file with AEP results for all adjuvants in current worksheet
             st.markdown(dataframe_to_csv_download_link(aep_fracs), unsafe_allow_html=True)
 
-            # Allow user to download Excel file with AEP results for all adjuvants in current worksheet
-            st.sidebar.write("Download Excel file with AEP results for all adjuvants in current worksheet")
-            write_excel_file(aep_fracs, sheet_name)
-
             # Get list of unique adjuvants
             adj_list = aep_fracs['Adj'].unique()
             # Drop nan values
             adj_list = adj_list[~pd.isnull(adj_list)]
 
-            # # Allow user to select adjuvant
-            # adj = st.sidebar.selectbox("Select Adjuvant", adj_list)
-
-            # # Show AEP results for selected adjuvant
-            # st.write("AEP Results for Selected Adjuvant:")
-            # st.write(aep_fracs[aep_fracs['Adj'] == adj])
 
             # Generate the figures
             figs = plot_figures(aep_fracs, adj_list)
@@ -465,14 +449,6 @@ def main():
                 img_base64 = base64.b64encode(img_buffer.read()).decode('ascii')
                 href = f'<a href="data:image/png;base64,{img_base64}" download="plot_{i+1}.png">Download Plot {i+1}</a>'
                 st.markdown(href, unsafe_allow_html=True)
-            
-            # Download Plots and Results Data
-            # if st.sidebar.button('Download CSV File and Figures'):
-                
-            #     zip_buffer = get_zip_file(figs, aep_fracs, sheet_name)
-            #     zip_base64 = base64.b64encode(zip_buffer.read()).decode('ascii')
-            #     href = f'<a href="data:application/zip;base64,{zip_base64}" download={sheet_name}.zip">Download ZIP File with AEP Results and Plots</a>'
-            #     st.sidebar.markdown(href, unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
