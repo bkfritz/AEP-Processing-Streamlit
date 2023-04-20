@@ -343,6 +343,10 @@ def plot_figures(df, adjuvants):
         figs.append(fig)
     return figs
 
+def plot_adj_figure(df):
+    fig = createAdjuvantAEPRatingFigure(df)
+    return fig
+
 def get_zip_file(figs, df, sheetname):
     zip_buffer = io.BytesIO()
 
@@ -416,27 +420,47 @@ def main():
             st.write("Too big cutoff value (average of 8008 and 6510 Dv90):")
             st.write(round(get_too_big(means),0))
             aep_fracs = calc_aep_fractions(means)
-            st.write("All AEP Results for Adjuvants in Current Worksheet:")
-            st.write(aep_fracs)
+            # st.write("All AEP Results for Adjuvants in Current Worksheet:")
+            # st.write(aep_fracs)
 
             aep_fracs = addProductData(aep_fracs)
+
+            # Allow user to download Excel file with AEP results for all adjuvants in current worksheet
+            st.sidebar.write("Download Excel file with AEP results for all adjuvants in current worksheet")
+            write_excel_file(aep_fracs, sheet_name)
+
             # Get list of unique adjuvants
             adj_list = aep_fracs['Adj'].unique()
             # Drop nan values
             adj_list = adj_list[~pd.isnull(adj_list)]
 
+            # Allow user to select adjuvant
+            adj = st.sidebar.selectbox("Select Adjuvant", adj_list)
+
+            # Show AEP results for selected adjuvant
+            st.write("AEP Results for Selected Adjuvant:")
+            st.write(aep_fracs[aep_fracs['Adj'] == adj])
+
             # Generate the figures
-            figs = plot_figures(aep_fracs, adj_list)
-            # for fig in figs:
-            #     st.write(fig)
+            figs = plot_figures(aep_fracs, [adj])
+            for i, fig in enumerate(figs):
+                st.write(fig)
+                
+                # Download a single plot image
+                img_buffer = io.BytesIO()
+                fig.savefig(img_buffer, format='png')
+                img_buffer.seek(0)
+                img_base64 = base64.b64encode(img_buffer.read()).decode('ascii')
+                href = f'<a href="data:image/png;base64,{img_base64}" download="plot_{i+1}.png">Download Plot {i+1}</a>'
+                st.markdown(href, unsafe_allow_html=True)
             
             # Download Plots and Results Data
-            if st.sidebar.button('Download CSV File and Figures'):
+            # if st.sidebar.button('Download CSV File and Figures'):
                 
-                zip_buffer = get_zip_file(figs, aep_fracs, sheet_name)
-                zip_base64 = base64.b64encode(zip_buffer.read()).decode('ascii')
-                href = f'<a href="data:application/zip;base64,{zip_base64}" download={sheet_name}.zip">Download ZIP File with AEP Results and Plots</a>'
-                st.sidebar.markdown(href, unsafe_allow_html=True)
+            #     zip_buffer = get_zip_file(figs, aep_fracs, sheet_name)
+            #     zip_base64 = base64.b64encode(zip_buffer.read()).decode('ascii')
+            #     href = f'<a href="data:application/zip;base64,{zip_base64}" download={sheet_name}.zip">Download ZIP File with AEP Results and Plots</a>'
+            #     st.sidebar.markdown(href, unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
