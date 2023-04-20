@@ -110,6 +110,22 @@ def process_excel_file(uploaded_file):
     df.columns = df.columns.str.replace(' ', '')
     return selected_sheet, df
 
+# Define function to read Excel file and prompt user to select sheet
+def process_whole_excel_file(uploaded_file):
+    sheet_names = pd.read_excel(uploaded_file, sheet_name=None).keys()
+    alldf = pd.DataFrame()
+    for sheet in sheet_names:
+        columns_to_read = 'A:N, AE:BI'
+        # read the selected sheet
+        df = pd.read_excel(uploaded_file, sheet_name=sheet, usecols=columns_to_read)
+        # Convert all columns names to string
+        df.columns = df.columns.astype(str)
+        # Remove whitespace from column names and convert to string
+        df.columns = df.columns.str.replace(' ', '')
+        # append df to alldf
+        alldf = pd.concat([alldf, df], ignore_index=True)
+    return alldf
+
 # Define function to calculate means for each unique combination of nozzle and solution
 def calculate_means(df):
     # Calculate means for each unique combination of nozzle and solution
@@ -333,7 +349,7 @@ def plot_figures(df, adjuvants):
 
 # Download the DataFrame as a CSV file
 def dataframe_to_csv_download_link(df, sheet):
-    filename = sheet + ' AEP Data.csv'
+    filename = 'AEP Data.csv'
     csv_buffer = io.StringIO()
     # Remove Active and Adj columns
     df = df.drop(['Active', 'Adj'], axis=1)
@@ -379,7 +395,7 @@ def main():
     # Read Excel file
     uploaded_file = st.sidebar.file_uploader("Upload Excel file", type=["xlsx", "xls"])
     if uploaded_file:
-        sheet_name, df = process_excel_file(uploaded_file)
+        df = process_excel_file(uploaded_file)
         if df is not None:
             st.write("Calculating means for each unique combination of nozzle and solution...")
             means = calculate_means(df)
@@ -396,7 +412,7 @@ def main():
             aep_fracs = addProductData(aep_fracs)
 
             # Allow user to download CSV file with AEP results for all adjuvants in current worksheet
-            st.markdown(dataframe_to_csv_download_link(aep_fracs, sheet_name), unsafe_allow_html=True)
+            st.markdown(dataframe_to_csv_download_link(aep_fracs), unsafe_allow_html=True)
 
             # Get list of unique adjuvants
             adj_list = aep_fracs['Adj'].unique()
