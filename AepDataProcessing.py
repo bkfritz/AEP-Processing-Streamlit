@@ -133,18 +133,6 @@ def calc_aep_fractions(df):
     
     return df
 
-# Define function to write mean data to a new Excel file
-def write_excel_file(df, sheet_name):
-    st.sidebar.write("Filename defaults to Sheet name selected")
-    file_name = st.sidebar.text_input("If desired, enter new filename to save current worksheet AEP results", sheet_name+".xlsx")
-    # Create a Pandas Excel writer using XlsxWriter as the engine.
-    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-        # write means to Excel file
-        df.to_excel(writer, sheet_name='Data', index=False)
-
-    st.sidebar.download_button(label='Download Excel Data', data=buffer,
-                           file_name=file_name, mime='application/vnd.ms-excel')
-
 def CPDA_Donut(values, ax=None, **plt_kwargs):
     # values are the AEP too small, just right, too big
     if ax is None:
@@ -343,33 +331,12 @@ def plot_figures(df, adjuvants):
         figs.append(fig)
     return figs
 
-def plot_adj_figure(df):
-    fig = createAdjuvantAEPRatingFigure(df)
-    return fig
-
-def get_zip_file(figs, df, sheetname):
-    zip_buffer = io.BytesIO()
-
-    with zipfile.ZipFile(zip_buffer, mode='w') as archive:
-        for i, fig in enumerate(figs):
-            png_buffer = io.BytesIO()
-            fig.savefig(png_buffer, format='png')
-            png_buffer.seek(0)
-            archive.writestr(f'figure_{i}.png', png_buffer.read())
-
-        # Save the dataframe to csv
-        csv_buffer = io.BytesIO()
-        df.to_csv(csv_buffer, index=False)
-        csv_buffer.seek(0)
-        archive.writestr(sheetname + '.csv', csv_buffer.getvalue())
-    
-    zip_buffer.seek(0)
-    return zip_buffer
-
 # Download the DataFrame as a CSV file
-def dataframe_to_csv_download_link(df):
-    filename = 'AEP Data.csv'
+def dataframe_to_csv_download_link(df, sheet):
+    filename = sheet + ' AEP Data.csv'
     csv_buffer = io.StringIO()
+    # Remove Active and Adj columns
+    df = df.drop(['Active', 'Adj'], axis=1)
     df.to_csv(csv_buffer, index=False)
     csv_base64 = base64.b64encode(csv_buffer.getvalue().encode('utf-8')).decode('ascii')
     href = f'<a href="data:text/csv;base64,{csv_base64}" download="{filename}">Download {filename}</a>'
@@ -429,13 +396,12 @@ def main():
             aep_fracs = addProductData(aep_fracs)
 
             # Allow user to download CSV file with AEP results for all adjuvants in current worksheet
-            st.markdown(dataframe_to_csv_download_link(aep_fracs), unsafe_allow_html=True)
+            st.markdown(dataframe_to_csv_download_link(aep_fracs, sheet_name), unsafe_allow_html=True)
 
             # Get list of unique adjuvants
             adj_list = aep_fracs['Adj'].unique()
             # Drop nan values
             adj_list = adj_list[~pd.isnull(adj_list)]
-
 
             # Generate the figures
             figs = plot_figures(aep_fracs, adj_list)
@@ -447,7 +413,7 @@ def main():
                 fig.savefig(img_buffer, format='png')
                 img_buffer.seek(0)
                 img_base64 = base64.b64encode(img_buffer.read()).decode('ascii')
-                href = f'<a href="data:image/png;base64,{img_base64}" download="plot_{i+1}.png">Download Plot {i+1}</a>'
+                href = f'<a href="data:image/png;base64,{img_base64}" download="{adj_list[i]}.png">Download {adj_list[i]} Plot</a>'
                 st.markdown(href, unsafe_allow_html=True)
 
 if __name__ == '__main__':
