@@ -97,20 +97,6 @@ def get_too_big(df):
     return too_big
 
 # Define function to read Excel file and prompt user to select sheet
-def process_excel_file(uploaded_file):
-    sheet_names = pd.read_excel(uploaded_file, sheet_name=None).keys()
-    selected_sheet = st.sidebar.selectbox("Select sheet", list(sheet_names))
-    # Specify the columns to read in the excel file, include A, B, D, F
-    columns_to_read = 'A:N, AE:BI'
-    # read the selected sheet
-    df = pd.read_excel(uploaded_file, sheet_name=selected_sheet, usecols=columns_to_read)
-    # Convert all columns names to string
-    df.columns = df.columns.astype(str)
-    # Remove whitespace from column names and convert to string
-    df.columns = df.columns.str.replace(' ', '')
-    return selected_sheet, df
-
-# Define function to read Excel file and prompt user to select sheet
 def process_whole_excel_file(uploaded_file):
     sheet_names = pd.read_excel(uploaded_file, sheet_name=None).keys()
     alldf = pd.DataFrame()
@@ -348,7 +334,7 @@ def plot_figures(df, adjuvants):
     return figs
 
 # Download the DataFrame as a CSV file
-def dataframe_to_csv_download_link(df, sheet):
+def dataframe_to_csv_download_link(df):
     filename = 'AEP Data.csv'
     csv_buffer = io.StringIO()
     # Remove Active and Adj columns
@@ -383,10 +369,13 @@ def main():
     If these assumptions are not met, the app will not work correctly.
 
 
-    If the excel file contains more than one worksheet of data, the user will have to selected each worksheet individually and save the resulting data and image files using the link provided below each.
+    If the Excel file has multiple worksheets, all worksheets will be processed at the same time and the resulting summary data file and plots generated.
 
 
-    Once all desired files are saved, any additional worksheets can be processed by selecting them in the pull menu above.  The new data will be processed and new download links will be provided.
+    Summary data file (in .csv format) contains data for all adjuvants and all nozzles in the uploaded Excel file, and must be downloaded and saved using the link provided.
+
+
+    Plots are generated for each adjuvant separately and must be downloaded and saved using the links provided.
     
     
     ''')
@@ -395,7 +384,7 @@ def main():
     # Read Excel file
     uploaded_file = st.sidebar.file_uploader("Upload Excel file", type=["xlsx", "xls"])
     if uploaded_file:
-        df = process_excel_file(uploaded_file)
+        df = process_whole_excel_file(uploaded_file)
         if df is not None:
             st.write("Calculating means for each unique combination of nozzle and solution...")
             means = calculate_means(df)
@@ -406,18 +395,21 @@ def main():
             st.write("Too big cutoff value (average of 8008 and 6510 Dv90):")
             st.write(round(get_too_big(means),0))
             aep_fracs = calc_aep_fractions(means)
-            st.write("All AEP Results for Adjuvants in Current Worksheet:")
-            st.write(aep_fracs)
-
             aep_fracs = addProductData(aep_fracs)
-
-            # Allow user to download CSV file with AEP results for all adjuvants in current worksheet
-            st.markdown(dataframe_to_csv_download_link(aep_fracs), unsafe_allow_html=True)
 
             # Get list of unique adjuvants
             adj_list = aep_fracs['Adj'].unique()
             # Drop nan values
             adj_list = adj_list[~pd.isnull(adj_list)]
+            # Write adjuvant names to screen
+            st.write("Adjuvants in current data set include:")
+            st.write(adj_list)
+
+            st.write("All AEP Results for Adjuvants in Current Worksheet:")
+            st.write(aep_fracs)
+
+            # Allow user to download CSV file with AEP results for all adjuvants in current worksheet
+            st.markdown(dataframe_to_csv_download_link(aep_fracs), unsafe_allow_html=True)
 
             # Generate the figures
             figs = plot_figures(aep_fracs, adj_list)
