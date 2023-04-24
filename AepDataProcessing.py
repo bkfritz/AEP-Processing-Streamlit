@@ -144,7 +144,7 @@ def CPDA_Donut(values, ax=None, **plt_kwargs):
         ax.text(-0.3, -0.2, 'N/A', fontsize=80,  color='black')
     else:
         explode = (0, 0, 0)
-        colors = ['royalblue', 'mediumseagreen','lightcoral']
+        colors = ['lightcoral', 'mediumseagreen','royalblue']
         ax.pie(values, explode=explode, colors=colors,
                 autopct='', shadow=False, startangle=140, pctdistance = 1.1,
                 textprops={'fontsize': 16}, labeldistance=1.2,
@@ -154,11 +154,11 @@ def CPDA_Donut(values, ax=None, **plt_kwargs):
         ax.add_patch(centre_circle)
 
         # Add text for Percent of AEP Just Right
-        ax.text(0, 0.18, str(int(values[1]))+'%', fontsize=35,  color='black', 
+        ax.text(0, 0.18, str(int(values[1]))+'%', fontsize=35,  color='royalblue',', 
                         ha='center', va='center')
 
         # Add text for Percent of AEP Too Small
-        ax.text(0, -0.37, str(int(values[0]))+'%', fontsize=30,  color='red', 
+        ax.text(0, -0.37, str(int(values[0]))+'%', fontsize=30,  color='lightcoral',
                         ha='center', va='center')
 
 def CPDA_Titles(text, bkgd_color, text_color, ax=None, show_text=True, **tit_kwargs):
