@@ -154,7 +154,7 @@ def CPDA_Donut(values, ax=None, **plt_kwargs):
         ax.add_patch(centre_circle)
 
         # Add text for Percent of AEP Just Right
-        ax.text(0, 0.18, str(int(values[1]))+'%', fontsize=35,  color='royalblue',', 
+        ax.text(0, 0.18, str(int(values[1]))+'%', fontsize=35,  color='royalblue',
                         ha='center', va='center')
 
         # Add text for Percent of AEP Too Small
