@@ -154,7 +154,7 @@ def CPDA_Donut(values, ax=None, **plt_kwargs):
         ax.add_patch(centre_circle)
 
         # Add text for Percent of AEP Just Right
-        ax.text(0, 0.18, str(int(values[1]))+'%', fontsize=35,  color='royalblue',
+        ax.text(0, 0.18, str(int(values[1]))+'%', fontsize=35,  color='mediumseagreen',
                         ha='center', va='center')
 
         # Add text for Percent of AEP Too Small
@@ -167,27 +167,27 @@ def CPDA_Titles(text, bkgd_color, text_color, ax=None, show_text=True, **tit_kwa
     if show_text == True:
         if text == 'RoundupPowerMax':
             text1 = 'Loaded Cationic\nSoluble Liquid\n(SL)'
-            text2 = 'Ex: glyphosate'
-            x1, y1 = 0.5, 0.65
-            x2, y2 = 0.5, 0.35
+            text2 = ''
+            x1, y1 = 0.5, 0.5
+            x2, y2 = 0.5, 0.5
             fontsize1 = 25
         elif text == '2,4-DAmine4':
             text1 = 'Loaded Anionic\nSoluble Liquid\n(SL)'
-            text2 = 'Ex: glufosinate'
-            x1, y1 = 0.5, 0.65
-            x2, y2 = 0.5, 0.35
+            text2 = ''
+            x1, y1 = 0.5, 0.5
+            x2, y2 = 0.5, 0.5
             fontsize1 = 25
         elif text == 'Liberty':
             text1 = 'No-load\nSoluble Liquid\n(SL)'
-            text2 = 'Ex: 2, 4-D amine'
-            x1, y1 = 0.5, 0.65
-            x2, y2 = 0.5, 0.35
+            text2 = ''
+            x1, y1 = 0.5, 0.5
+            x2, y2 = 0.5, 0.5
             fontsize1 = 25
         elif text == 'Tilt':
             text1 = 'Emulsifiable\nConcentrate\n(EC)'
-            text2 = 'Ex: pyraclostrobin'
-            x1, y1 = 0.5, 0.65
-            x2, y2 = 0.5, 0.35
+            text2 = ''
+            x1, y1 = 0.5, 0.5
+            x2, y2 = 0.5, 0.5
             fontsize1 = 25
         elif text == 'XR11004':
             text1 = text
@@ -380,6 +380,10 @@ def main():
     
     ''')
 
+    st.sidebar.title("Select Image Format to use for Downloading Plots")
+    image_format = "jpg"
+    image_format = st.sidebar.selectbox("Select Image Format", ["jpg", "png", "tiff"])
+
     st.sidebar.title("Upload an Excel file with droplet size data")
     # Read Excel file
     uploaded_file = st.sidebar.file_uploader("Upload Excel file", type=["xlsx", "xls"])
@@ -418,10 +422,10 @@ def main():
                 
                 # Download a single plot image
                 img_buffer = io.BytesIO()
-                fig.savefig(img_buffer, format='png')
+                fig.savefig(img_buffer, format=image_format)
                 img_buffer.seek(0)
                 img_base64 = base64.b64encode(img_buffer.read()).decode('ascii')
-                href = f'<a href="data:image/png;base64,{img_base64}" download="{adj_list[i]}.png">Download {adj_list[i]} Plot</a>'
+                href = f'<a href="data:image/{image_format};base64,{img_base64}" download="{adj_list[i]}.{image_format}">Download {adj_list[i]} Plot</a>'
                 st.markdown(href, unsafe_allow_html=True)
 
 if __name__ == '__main__':
