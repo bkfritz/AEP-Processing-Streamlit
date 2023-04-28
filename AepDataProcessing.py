@@ -370,6 +370,7 @@ def main():
     
     
     ''')
+    proper_column_order = True
     image_format = "jpg"
     image_format = st.sidebar.selectbox("Select Image Format", ["jpg", "png", "tiff"])
 
