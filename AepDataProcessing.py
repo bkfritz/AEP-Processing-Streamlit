@@ -348,10 +348,7 @@ def dataframe_to_csv_download_link(df):
 def main():
     st.sidebar.title("Droplet Size Parameters")
     st.sidebar.write('''
-    ## About
-    
-
-    This app assumes that the Excel file contains the following columns in the following order in columns A:N:
+    Data in Excel must be in the following order in columns A:N:
 
 
     Date, Time, Range, Solution, Nozzle, Nozzle Orifice, Pressure, Airspeed, Rep, Dv10, Dv50, Dv90, RS
@@ -360,27 +357,19 @@ def main():
     Followed by the 31 incremental distribution columns: AE through BI
 
     
-    It is also assumed that the reference nozzle data names contain the strings:
+    Reference nozzle must names contain the strings:
 
 
     11001, 11003, 11006, 8008, 6510, and 6515.
 
 
-    If these assumptions are not met, the app will not work correctly.
+    All worksheets in Excel file will be processed.
 
 
-    If the Excel file has multiple worksheets, all worksheets will be processed at the same time and the resulting summary data file and plots generated.
-
-
-    Summary data file (in .csv format) contains data for all adjuvants and all nozzles in the uploaded Excel file, and must be downloaded and saved using the link provided.
-
-
-    Plots are generated for each adjuvant separately and must be downloaded and saved using the links provided.
+    Summary data and plots must be downloaded individually.
     
     
     ''')
-
-    st.sidebar.title("Select Image Format to use for Downloading Plots")
     image_format = "jpg"
     image_format = st.sidebar.selectbox("Select Image Format", ["jpg", "png", "tiff"])
 
@@ -391,7 +380,7 @@ def main():
         df = process_whole_excel_file(uploaded_file)
         if df is not None:
             # Ask the user if their data is already in the correct order and if not allow them to select the columns
-            proper_column_order = st.sidebar.checkbox("Is your data in the correct order as shown above?")
+            proper_column_order = st.sidebar.checkbox("Is your data in the correct order as given above?")
             if not proper_column_order:
                 # Prompt the user the select the various columns needed for the calculations
                 nozzle_column = st.sidebar.selectbox("Select the column containing the nozzle names", df.columns)
