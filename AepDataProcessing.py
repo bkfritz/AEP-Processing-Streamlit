@@ -390,43 +390,59 @@ def main():
     if uploaded_file:
         df = process_whole_excel_file(uploaded_file)
         if df is not None:
-            st.write("Calculating means for each unique combination of nozzle and solution...")
-            means = calculate_means(df)
-            # write too_small value to screen
-            st.write("Too small cutoff value (11003 Dv10):")    
-            st.write(round(get_too_small(means),0))
-            # write too_big value to screen
-            st.write("Too big cutoff value (average of 8008 and 6510 Dv90):")
-            st.write(round(get_too_big(means),0))
-            aep_fracs = calc_aep_fractions(means)
-            aep_fracs = addProductData(aep_fracs)
+            # Ask the user if their data is already in the correct order and if not allow them to select the columns
+            proper_column_order = st.sidebar.checkbox("Is your data in the correct order as shown above?")
+            if not proper_column_order:
+                # Prompt the user the select the various columns needed for the calculations
+                nozzle_column = st.sidebar.selectbox("Select the column containing the nozzle names", df.columns)
+                solution_column = st.sidebar.selectbox("Select the column containing the solution names", df.columns)
+                incremental_columns = st.sidebar.multiselect("Select the columns containing the incremental distribution data", df.columns)
+                selected_columns = [nozzle_column, solution_column] + incremental_columns
+                df = df[selected_columns]
+            else:
+                # Set new df as columns 3, 4, 10-12, and 29 through 59
+                df = df.iloc[:, [3, 4, 10, 11, 12] + list(range(29, 60))]
 
-            # Get list of unique adjuvants
-            adj_list = aep_fracs['Adj'].unique()
-            # Drop nan values
-            adj_list = adj_list[~pd.isnull(adj_list)]
-            # Write adjuvant names to screen
-            st.write("Adjuvants in current data set include:")
-            st.write(adj_list)
+            # Add a button prompting user to start calculations
+            if st.sidebar.button("Calculate AEP Fractions"):
 
-            st.write("All AEP Results for Adjuvants in Current Worksheet:")
-            st.write(aep_fracs)
+                st.write("Calculating means for each unique combination of nozzle and solution...")
+                means = calculate_means(df)
+                # write too_small value to screen
+                st.write("Too small cutoff value (11003 Dv10):")    
+                st.write(round(get_too_small(means),0))
+                # write too_big value to screen
+                st.write("Too big cutoff value (average of 8008 and 6510 Dv90):")
+                st.write(round(get_too_big(means),0))
+                aep_fracs = calc_aep_fractions(means)
+                aep_fracs = addProductData(aep_fracs)
 
-            # Allow user to download CSV file with AEP results for all adjuvants in current worksheet
-            st.markdown(dataframe_to_csv_download_link(aep_fracs), unsafe_allow_html=True)
+                # Get list of unique adjuvants
+                adj_list = aep_fracs['Adj'].unique()
+                # Drop nan values
+                adj_list = adj_list[~pd.isnull(adj_list)]
+                # Write adjuvant names to screen
+                st.write("Adjuvants in current data set include:")
+                st.write(adj_list)
 
-            # Generate the figures
-            figs = plot_figures(aep_fracs, adj_list)
-            for i, fig in enumerate(figs):
-                st.write(fig)
-                
-                # Download a single plot image
-                img_buffer = io.BytesIO()
-                fig.savefig(img_buffer, format=image_format)
-                img_buffer.seek(0)
-                img_base64 = base64.b64encode(img_buffer.read()).decode('ascii')
-                href = f'<a href="data:image/{image_format};base64,{img_base64}" download="{adj_list[i]}.{image_format}">Download {adj_list[i]} Plot</a>'
-                st.markdown(href, unsafe_allow_html=True)
+                st.write("All AEP Results for Adjuvants in Current Worksheet:")
+                st.write(aep_fracs)
+
+                # Allow user to download CSV file with AEP results for all adjuvants in current worksheet
+                st.markdown(dataframe_to_csv_download_link(aep_fracs), unsafe_allow_html=True)
+
+                # Generate the figures
+                figs = plot_figures(aep_fracs, adj_list)
+                for i, fig in enumerate(figs):
+                    st.write(fig)
+                    
+                    # Download a single plot image
+                    img_buffer = io.BytesIO()
+                    fig.savefig(img_buffer, format=image_format)
+                    img_buffer.seek(0)
+                    img_base64 = base64.b64encode(img_buffer.read()).decode('ascii')
+                    href = f'<a href="data:image/{image_format};base64,{img_base64}" download="{adj_list[i]}.{image_format}">Download {adj_list[i]} Plot</a>'
+                    st.markdown(href, unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
