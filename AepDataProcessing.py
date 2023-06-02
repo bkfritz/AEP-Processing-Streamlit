@@ -360,44 +360,44 @@ def createAdjuvantAEPRatingFigure(adj_df, adj):
         ax23 = CPDA_Donut(getActiveNozzleData(adj_df, actives[3], nozzles[2]), ax=axes[4,3])
         ax24 = CPDA_Donut(getActiveNozzleData(adj_df, actives[3], nozzles[3]), ax=axes[4,4])
     
-    else:
+    # else:
 
-        # add axes for Adjuvant name
-        ax0 = CPDA_Titles(adj, 'royalblue', 'black', ax=axes[0,0])
-        # add subplots that show nozzle names
-        ax1 = CPDA_Titles(nozzles[0], 'lightsteelblue', 'black', ax=axes[0,1])
-        ax2 = CPDA_Titles(nozzles[1], 'lightsteelblue', 'black', ax=axes[0,2])
-        ax3 = CPDA_Titles(nozzles[2], 'lightsteelblue', 'black', ax=axes[0,3])
-        ax4 = CPDA_Titles(nozzles[3], 'lightsteelblue', 'black', ax=axes[0,4])
+    #     # add axes for Adjuvant name
+    #     ax0 = CPDA_Titles(adj, 'royalblue', 'black', ax=axes[0,0])
+    #     # add subplots that show nozzle names
+    #     ax1 = CPDA_Titles(nozzles[0], 'lightsteelblue', 'black', ax=axes[0,1])
+    #     ax2 = CPDA_Titles(nozzles[1], 'lightsteelblue', 'black', ax=axes[0,2])
+    #     ax3 = CPDA_Titles(nozzles[2], 'lightsteelblue', 'black', ax=axes[0,3])
+    #     ax4 = CPDA_Titles(nozzles[3], 'lightsteelblue', 'black', ax=axes[0,4])
 
-        # Roundup PowerMax data row
-        ax5 = CPDA_Titles(actives[0], 'lightsteelblue', 'black', ax=axes[1,0])
-        # ax6 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[0]), ax=axes[1,1])
-        ax6 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[0]), img, ax=axes[1,1])
-        ax7 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[1]), img, ax=axes[1,2])
-        ax8 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[2]), img, ax=axes[1,3])
-        ax9 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[3]), img, ax=axes[1,4])
+    #     # Roundup PowerMax data row
+    #     ax5 = CPDA_Titles(actives[0], 'lightsteelblue', 'black', ax=axes[1,0])
+    #     # ax6 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[0]), ax=axes[1,1])
+    #     ax6 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[0]), img, ax=axes[1,1])
+    #     ax7 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[1]), img, ax=axes[1,2])
+    #     ax8 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[2]), img, ax=axes[1,3])
+    #     ax9 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[3]), img, ax=axes[1,4])
 
-        # Liberty data row
-        ax10 = CPDA_Titles(actives[1], 'lightsteelblue', 'black', ax=axes[2,0])
-        ax11 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[0]), img, ax=axes[2,1])
-        ax12 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[1]), img, ax=axes[2,2])
-        ax13 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[2]), img, ax=axes[2,3])
-        ax14 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[3]), img, ax=axes[2,4])
+    #     # Liberty data row
+    #     ax10 = CPDA_Titles(actives[1], 'lightsteelblue', 'black', ax=axes[2,0])
+    #     ax11 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[0]), img, ax=axes[2,1])
+    #     ax12 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[1]), img, ax=axes[2,2])
+    #     ax13 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[2]), img, ax=axes[2,3])
+    #     ax14 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[3]), img, ax=axes[2,4])
 
-        # 2,4-DAmine4 data row
-        ax15 = CPDA_Titles(actives[2], 'lightsteelblue', 'black', ax=axes[3,0])
-        ax16 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[0]), img, ax=axes[3,1])
-        ax17 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[1]), img, ax=axes[3,2])
-        ax18 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[2]), img, ax=axes[3,3])
-        ax19 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[3]), img, ax=axes[3,4])
+    #     # 2,4-DAmine4 data row
+    #     ax15 = CPDA_Titles(actives[2], 'lightsteelblue', 'black', ax=axes[3,0])
+    #     ax16 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[0]), img, ax=axes[3,1])
+    #     ax17 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[1]), img, ax=axes[3,2])
+    #     ax18 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[2]), img, ax=axes[3,3])
+    #     ax19 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[3]), img, ax=axes[3,4])
 
-        # Tilt data row
-        ax20 = CPDA_Titles(actives[3], 'lightsteelblue', 'black', ax=axes[4,0])
-        ax21 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[0]), img, ax=axes[4,1])
-        ax22 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[1]), img, ax=axes[4,2])
-        ax23 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[2]), img, ax=axes[4,3])
-        ax24 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[3]), img, ax=axes[4,4])
+    #     # Tilt data row
+    #     ax20 = CPDA_Titles(actives[3], 'lightsteelblue', 'black', ax=axes[4,0])
+    #     ax21 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[0]), img, ax=axes[4,1])
+    #     ax22 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[1]), img, ax=axes[4,2])
+    #     ax23 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[2]), img, ax=axes[4,3])
+    #     ax24 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[3]), img, ax=axes[4,4])
 
     fig.subplots_adjust(wspace=0, hspace=0)
 
