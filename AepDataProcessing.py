@@ -308,7 +308,7 @@ def addProductData(df):
 
     return df
 
-def createAdjuvantAEPRatingFigure(adj_df):
+def createAdjuvantAEPRatingFigure(adj_df, adj):
         # The following are set by the CPDA Program and should  not change
     # All whitespaces removed to hopefully prevent issues due to user entry errors
     nozzles = ['XR11004', 'TT11004', 'AIXR11004', 'TTI11004']
@@ -319,7 +319,7 @@ def createAdjuvantAEPRatingFigure(adj_df):
     axes = fig.subplots(5,5)
 
     # add axes for Adjuvant name
-    ax0 = CPDA_Titles('', 'royalblue', 'black', ax=axes[0,0], show_text=False)
+    ax0 = CPDA_Titles(adj, 'royalblue', 'black', ax=axes[0,0])
     # add subplots that show nozzle names
     ax1 = CPDA_Titles(nozzles[0], 'lightsteelblue', 'black', ax=axes[0,1])
     ax1 = CPDA_Titles(nozzles[0], 'lightsteelblue', 'black', ax=axes[0,1])
@@ -365,7 +365,7 @@ def plot_figures(df, adjuvants):
     for adj in adjuvants:
         # Filter data by selected adjuvant
         filtered_data = df[df['Adj'] == adj]
-        fig = createAdjuvantAEPRatingFigure(filtered_data)
+        fig = createAdjuvantAEPRatingFigure(filtered_data, adj)
         figs.append(fig)
     return figs
 
