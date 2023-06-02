@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import io
 import base64
 import matplotlib as mpl
@@ -16,6 +17,9 @@ mpl.rcParams['axes.linewidth'] = 3
 # To run: streamlit run AepDataProcessing.py
 
 buffer = io.BytesIO()
+
+# Read the image file
+img = plt.imread('droplet_lighter.png')
 
 def CPDA_Donut(values, ax=None, **plt_kwargs):
     # values are the AEP too small, just right, too big
@@ -42,6 +46,28 @@ def CPDA_Donut(values, ax=None, **plt_kwargs):
         # Add text for Percent of AEP Too Small
         ax.text(0, -0.37, str(int(values[0]))+'%', fontsize=30,  color='lightcoral', 
                         ha='center', va='center')
+    return ax
+
+def CPDA_DropletWithData(values, img, ax=None, **plt_kwargs):
+    # values are the AEP too small, just right, too big
+    if ax is None:
+        ax = plt.gca()
+
+    if len(values) == 0:
+        ax.imshow(img)
+        ax.text(0.5, 0.5, 'N/A', fontsize=80,  color='black')
+    else:
+        ax.imshow(img)
+
+        # Add text for Percent of AEP Just Right
+        ax.text(0.5, 0.5, str(int(values[1]))+'%', fontsize=35,  color='mediumseagreen', 
+                        ha='center', va='center')
+
+        # Add text for Percent of AEP Too Small
+        # ax.text(0, -0.37, str(int(values[0]))+'%', fontsize=30,  color='lightcoral', 
+        #                 ha='center', va='center')
+
+        return ax
 
 def interpolate_volume_fraction(row, diameter, range="Small"):
     diameter = int(diameter)
@@ -288,13 +314,15 @@ def createAdjuvantAEPRatingFigure(adj_df):
     ax0 = CPDA_Titles('', 'royalblue', 'black', ax=axes[0,0], show_text=False)
     # add subplots that show nozzle names
     ax1 = CPDA_Titles(nozzles[0], 'lightsteelblue', 'black', ax=axes[0,1])
+    ax1 = CPDA_Titles(nozzles[0], 'lightsteelblue', 'black', ax=axes[0,1])
     ax2 = CPDA_Titles(nozzles[1], 'lightsteelblue', 'black', ax=axes[0,2])
     ax3 = CPDA_Titles(nozzles[2], 'lightsteelblue', 'black', ax=axes[0,3])
     ax4 = CPDA_Titles(nozzles[3], 'lightsteelblue', 'black', ax=axes[0,4])
 
     # Roundup PowerMax data row
     ax5 = CPDA_Titles(actives[0], 'lightsteelblue', 'black', ax=axes[1,0])
-    ax6 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[0]), ax=axes[1,1])
+    # ax6 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[0]), ax=axes[1,1])
+    ax6 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[0]), img, ax=axes[1,1])
     ax7 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[1]), ax=axes[1,2])
     ax8 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[2]), ax=axes[1,3])
     ax9 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[3]), ax=axes[1,4])
