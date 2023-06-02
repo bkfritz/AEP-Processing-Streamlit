@@ -60,12 +60,19 @@ def CPDA_DropletWithData(values, img, ax=None, **plt_kwargs):
         ax.imshow(img)
 
         # Add text for Percent of AEP Just Right
-        ax.text(0.5, 0.5, str(int(values[1]))+'%', fontsize=35,  color='mediumseagreen', 
+        ax.text(0, 0.18, str(int(values[1]))+'%', fontsize=35,  color='mediumseagreen', 
                         ha='center', va='center')
 
         # Add text for Percent of AEP Too Small
-        # ax.text(0, -0.37, str(int(values[0]))+'%', fontsize=30,  color='lightcoral', 
-        #                 ha='center', va='center')
+        ax.text(0, -0.37, str(int(values[0]))+'%', fontsize=30,  color='lightcoral', 
+                        ha='center', va='center')
+
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["bottom"].set_visible(False)
+        ax.spines["left"].set_visible(False)
+        ax.set_xticks([])
+        ax.set_yticks([])
 
         return ax
 
