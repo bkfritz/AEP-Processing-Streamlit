@@ -19,7 +19,7 @@ mpl.rcParams['axes.linewidth'] = 3
 buffer = io.BytesIO()
 
 # Read the image file
-img = plt.imread('droplet_lighter.png')
+img = plt.imread('droplet-lighter.png')
 
 def CPDA_Donut(values, ax=None, **plt_kwargs):
     # values are the AEP too small, just right, too big
