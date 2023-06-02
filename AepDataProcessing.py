@@ -20,6 +20,10 @@ buffer = io.BytesIO()
 # Read the image file
 img = plt.imread('droplet-lighter.png')
 
+def format_text(text):
+    words = text.split(' ')
+    return '\n'.join(words)
+
 def CPDA_Donut(values, ax=None, **plt_kwargs):
     # values are the AEP too small, just right, too big
     if ax is None:
@@ -248,7 +252,7 @@ def CPDA_Titles(text, bkgd_color, text_color, ax=None, show_text=True, **tit_kwa
             x2, y2 = 0.5, 0.35
             fontsize1 = 25
         else:
-            text1 = text
+            text1 = format_text(text)
             text2 = ''
             x1, y1 = 0.5, 0.5
             x2, y2 = 0.5, 0.5
@@ -321,7 +325,6 @@ def createAdjuvantAEPRatingFigure(adj_df, adj):
     # add axes for Adjuvant name
     ax0 = CPDA_Titles(adj, 'royalblue', 'black', ax=axes[0,0])
     # add subplots that show nozzle names
-    ax1 = CPDA_Titles(nozzles[0], 'lightsteelblue', 'black', ax=axes[0,1])
     ax1 = CPDA_Titles(nozzles[0], 'lightsteelblue', 'black', ax=axes[0,1])
     ax2 = CPDA_Titles(nozzles[1], 'lightsteelblue', 'black', ax=axes[0,2])
     ax3 = CPDA_Titles(nozzles[2], 'lightsteelblue', 'black', ax=axes[0,3])
