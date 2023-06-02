@@ -8,7 +8,6 @@ import io
 import base64
 import matplotlib as mpl
 import warnings
-import zipfile
 
 warnings.filterwarnings('ignore')
 
@@ -61,11 +60,13 @@ def CPDA_DropletWithData(values, img, ax=None, **plt_kwargs):
 
         # Add text for Percent of AEP Just Right
         ax.text(0.5, 0.55, str(int(values[1]))+'%', fontsize=35,  color='mediumseagreen', 
-                        ha='center', va='center', transform=ax.transAxes)
+                        ha='center', va='center', transform=ax.transAxes,
+                        weight = 'bold')
 
         # Add text for Percent of AEP Too Small
         ax.text(0.5, 0.35, str(int(values[0]))+'%', fontsize=35,  color='lightcoral', 
-                        ha='center', va='center', transform=ax.transAxes)
+                        ha='center', va='center', transform=ax.transAxes,
+                        weight = 'bold')
 
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
@@ -330,30 +331,30 @@ def createAdjuvantAEPRatingFigure(adj_df):
     ax5 = CPDA_Titles(actives[0], 'lightsteelblue', 'black', ax=axes[1,0])
     # ax6 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[0]), ax=axes[1,1])
     ax6 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[0]), img, ax=axes[1,1])
-    ax7 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[1]), ax=axes[1,2])
-    ax8 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[2]), ax=axes[1,3])
-    ax9 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[3]), ax=axes[1,4])
+    ax7 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[1]), img, ax=axes[1,2])
+    ax8 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[2]), img, ax=axes[1,3])
+    ax9 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[3]), img, ax=axes[1,4])
 
     # Liberty data row
     ax10 = CPDA_Titles(actives[1], 'lightsteelblue', 'black', ax=axes[2,0])
-    ax11 = CPDA_Donut(getActiveNozzleData(adj_df, actives[1], nozzles[0]), ax=axes[2,1])
-    ax12 = CPDA_Donut(getActiveNozzleData(adj_df, actives[1], nozzles[1]), ax=axes[2,2])
-    ax13 = CPDA_Donut(getActiveNozzleData(adj_df, actives[1], nozzles[2]), ax=axes[2,3])
-    ax14 = CPDA_Donut(getActiveNozzleData(adj_df, actives[1], nozzles[3]), ax=axes[2,4])
+    ax11 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[0]), img, ax=axes[2,1])
+    ax12 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[1]), img, ax=axes[2,2])
+    ax13 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[2]), img, ax=axes[2,3])
+    ax14 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[1], nozzles[3]), img, ax=axes[2,4])
 
     # 2,4-DAmine4 data row
     ax15 = CPDA_Titles(actives[2], 'lightsteelblue', 'black', ax=axes[3,0])
-    ax16 = CPDA_Donut(getActiveNozzleData(adj_df, actives[2], nozzles[0]), ax=axes[3,1])
-    ax17 = CPDA_Donut(getActiveNozzleData(adj_df, actives[2], nozzles[1]), ax=axes[3,2])
-    ax18 = CPDA_Donut(getActiveNozzleData(adj_df, actives[2], nozzles[2]), ax=axes[3,3])
-    ax19 = CPDA_Donut(getActiveNozzleData(adj_df, actives[2], nozzles[3]), ax=axes[3,4])
+    ax16 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[0]), img, ax=axes[3,1])
+    ax17 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[1]), img, ax=axes[3,2])
+    ax18 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[2]), img, ax=axes[3,3])
+    ax19 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[2], nozzles[3]), img, ax=axes[3,4])
 
     # Tilt data row
     ax20 = CPDA_Titles(actives[3], 'lightsteelblue', 'black', ax=axes[4,0])
-    ax21 = CPDA_Donut(getActiveNozzleData(adj_df, actives[3], nozzles[0]), ax=axes[4,1])
-    ax22 = CPDA_Donut(getActiveNozzleData(adj_df, actives[3], nozzles[1]), ax=axes[4,2])
-    ax23 = CPDA_Donut(getActiveNozzleData(adj_df, actives[3], nozzles[2]), ax=axes[4,3])
-    ax24 = CPDA_Donut(getActiveNozzleData(adj_df, actives[3], nozzles[3]), ax=axes[4,4])
+    ax21 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[0]), img, ax=axes[4,1])
+    ax22 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[1]), img, ax=axes[4,2])
+    ax23 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[2]), img, ax=axes[4,3])
+    ax24 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[3], nozzles[3]), img, ax=axes[4,4])
 
     fig.subplots_adjust(wspace=0, hspace=0)
 
