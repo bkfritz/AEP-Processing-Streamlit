@@ -321,7 +321,7 @@ def createAdjuvantAEPRatingFigure(adj_df, adj):
     fig = plt.figure(figsize=(20,20))
     axes = fig.subplots(5,5)
 
-    donuts = True
+    donuts = False
 
     if donuts == True:
             # add axes for Adjuvant name
