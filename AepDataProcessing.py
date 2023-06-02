@@ -334,7 +334,7 @@ def createAdjuvantAEPRatingFigure(adj_df, adj):
 
         # Roundup PowerMax data row
         ax5 = CPDA_Titles(actives[0], 'lightsteelblue', 'black', ax=axes[1,0])
-        ax6 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[0]), img, ax=axes[1,1])
+        ax6 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[0]), ax=axes[1,1])
         ax7 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[1]), ax=axes[1,2])
         ax8 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[2]), ax=axes[1,3])
         ax9 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[3]), ax=axes[1,4])
