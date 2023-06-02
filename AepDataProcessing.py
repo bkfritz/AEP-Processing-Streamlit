@@ -55,16 +55,16 @@ def CPDA_DropletWithData(values, img, ax=None, **plt_kwargs):
 
     if len(values) == 0:
         ax.imshow(img)
-        ax.text(0.5, 0.5, 'N/A', fontsize=80,  color='black')
+        ax.text(0, 0, 'N/A', fontsize=80,  color='black')
     else:
         ax.imshow(img)
 
         # Add text for Percent of AEP Just Right
-        ax.text(0, 0.18, str(int(values[1]))+'%', fontsize=35,  color='mediumseagreen', 
+        ax.text(0, 0, str(int(values[1]))+'%', fontsize=35,  color='mediumseagreen', 
                         ha='center', va='center')
 
         # Add text for Percent of AEP Too Small
-        ax.text(0, -0.37, str(int(values[0]))+'%', fontsize=30,  color='lightcoral', 
+        ax.text(0, 0, str(int(values[0]))+'%', fontsize=30,  color='lightcoral', 
                         ha='center', va='center')
 
         ax.spines["top"].set_visible(False)
@@ -254,7 +254,7 @@ def CPDA_Titles(text, bkgd_color, text_color, ax=None, show_text=True, **tit_kwa
             fontsize1 = 30
         ax.text(x1, y1, text1, fontsize = fontsize1, weight='normal',
                 color = text_color, ha='center', va = 'center')
-        ax.text(x2, y2, text2, fontsize = 20, weight='normal', color='white', 
+        ax.text(x2, y2, text2, fontsize = 20, weight='normal', color='black', 
                 ha='center', va = 'center')
     ax.set_facecolor(bkgd_color)
 
