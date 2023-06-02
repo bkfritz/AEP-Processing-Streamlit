@@ -41,11 +41,11 @@ def CPDA_Donut(values, ax=None, **plt_kwargs):
 
         # Add text for Percent of AEP Just Right
         ax.text(0, 0.18, str(int(values[1]))+'%', fontsize=35,  color='mediumseagreen', 
-                        ha='center', va='center')
+                        ha='center', va='center', transform=ax.transAxes)
 
         # Add text for Percent of AEP Too Small
         ax.text(0, -0.37, str(int(values[0]))+'%', fontsize=30,  color='lightcoral', 
-                        ha='center', va='center')
+                        ha='center', va='center', transform=ax.transAxes)
     return ax
 
 def CPDA_DropletWithData(values, img, ax=None, **plt_kwargs):
