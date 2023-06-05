@@ -133,7 +133,8 @@ def get_too_big(df):
     too_big = (too_big1 + too_big2) / 2
     return too_big
 
-# Define function to read Excel file and prompt user to select sheet
+@st.cache
+# Define function to read Excel file, all sheets, and calculate means and AEP Fractions
 def process_whole_excel_file(uploaded_file):
     sheet_names = pd.read_excel(uploaded_file, sheet_name=None).keys()
     alldf = pd.DataFrame()
@@ -147,13 +148,13 @@ def process_whole_excel_file(uploaded_file):
         df.columns = df.columns.str.replace(' ', '')
         # append df to alldf
         alldf = pd.concat([alldf, df], ignore_index=True)
-    return alldf
+        # calculate means
+        allmeans = df.groupby(['Nozzle', 'Solution'], as_index=False).mean(numeric_only=True)
+        # calculate AEP fractions
+        aep_fracs = calc_aep_fractions(allmeans)
+        aep_fracs = addProductData(aep_fracs)
 
-# Define function to calculate means for each unique combination of nozzle and solution
-def calculate_means(df):
-    # Calculate means for each unique combination of nozzle and solution
-    means = df.groupby(['Nozzle', 'Solution'], as_index=False).mean(numeric_only=True)
-    return means
+    return aep_fracs
 
 # Define function the gets too_small and calculates the volume fraction for each row
 def calc_aep_fractions(df):
@@ -459,19 +460,8 @@ def main():
     # Read Excel file
     uploaded_file = st.sidebar.file_uploader("Upload Excel file", type=["xlsx", "xls"])
     if uploaded_file:
-        df = process_whole_excel_file(uploaded_file)
-        if df is not None:
-
-            st.write("Calculating means for each unique combination of nozzle and solution...")
-            means = calculate_means(df)
-            # write too_small value to screen
-            st.write("Too small cutoff value (11003 Dv10):")    
-            st.write(round(get_too_small(means),0))
-            # write too_big value to screen
-            st.write("Too big cutoff value (average of 8008 and 6510 Dv90):")
-            st.write(round(get_too_big(means),0))
-            aep_fracs = calc_aep_fractions(means)
-            aep_fracs = addProductData(aep_fracs)
+        aep_fracs = process_whole_excel_file(uploaded_file)
+        if aep_fracs is not None:
 
             # Get list of unique adjuvants
             adj_list = aep_fracs['Adj'].unique()
