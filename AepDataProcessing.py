@@ -336,7 +336,7 @@ def createAdjuvantAEPRatingFigure(adj_df, adj):
         ax5 = CPDA_Titles(actives[0], 'lightsteelblue', 'black', ax=axes[1,0])
         ax6 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[0]), img, ax=axes[1,1])
         ax7 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[1]), img, ax=axes[1,2])
-        ax8 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[2]), ax=axes[1,3])
+        ax8 = CPDA_DropletWithData(getActiveNozzleData(adj_df, actives[0], nozzles[2]), img, ax=axes[1,3])
         ax9 = CPDA_Donut(getActiveNozzleData(adj_df, actives[0], nozzles[3]), ax=axes[1,4])
 
         # Liberty data row
